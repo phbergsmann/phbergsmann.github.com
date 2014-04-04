@@ -32,9 +32,11 @@ sudo apt-get update
 sudo apt-get install nginx hhvm graphicsmagick mysql-server php5 php5-curl php5-fpm php5-gd php5-mysqlnd
 {% endhighlight %}
 
+Now make sure that php-fpm, hhvm and nginx service are all running!
+
 ## Configuring NGINX
 
-Create a new site configuration e.g. */etc/nginx/sites-available/demo* with the following content:
+Create a new site configuration e.g. */etc/nginx/sites-available/demo* with the following content and reload nginx:
 
 <script src="https://gist.github.com/phbergsmann/9975380.js"></script>
 
