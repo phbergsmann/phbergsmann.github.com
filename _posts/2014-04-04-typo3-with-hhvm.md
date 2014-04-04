@@ -36,7 +36,8 @@ Now make sure that php-fpm, hhvm and nginx service are all running!
 
 ## Configuring NGINX
 
-Create a new site configuration e.g. */etc/nginx/sites-available/demo* with the following content and reload nginx:
+Create a new site configuration e.g. */etc/nginx/sites-available/demo* with the following content, symlink it to
+*/etc/nginx/sites-enabled/demo* and reload nginx:
 
 <script src="https://gist.github.com/phbergsmann/9975380.js"></script>
 
