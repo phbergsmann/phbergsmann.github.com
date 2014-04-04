@@ -61,7 +61,9 @@
       </footer>
 
     </div>
-
+    {% for js in page.customjs %}
+    <script type="text/javascript" src="{{ js }}"></script>
+    {% endfor %}
     {% include JB/analytics %}
   </body>
 </html>
