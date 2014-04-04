@@ -14,25 +14,40 @@ Since I am using debian this post targets *debian wheezy*.
 
 We will need:
 
-* nginx
-* hhvm
-* PHP with these modules: curl, gd, mysql
+* Nginx
+* HHVM
+* PHP
 * PHP-FPM
-* Graphicsmagick
-* MySQL/MariaDB
 
-```bash
+TYPO3 specific packages:
+
+* MySQL/MariaDB
+* Graphicsmagick
+* PHP modules: curl, gd, mysqlnd
+
+{% highlight bash %}
 wget -O - http://dl.hhvm.com/conf/hhvm.gpg.key | sudo apt-key add -
 echo deb http://dl.hhvm.com/debian wheezy main | sudo tee /etc/apt/sources.list.d/hhvm.list
 sudo apt-get update
 sudo apt-get install nginx hhvm graphicsmagick mysql-server php5 php5-curl php5-fpm php5-gd php5-mysqlnd
-```
+{% endhighlight %}
 
 ## Configuring NGINX
 
 Create a new site configuration e.g. */etc/nginx/sites-available/demo* with the following content:
 
 <script src="https://gist.github.com/phbergsmann/9975380.js"></script>
+
+**Special configuration explanation**
+
+Line 69 enables error interception for fast-cgi. With this setting it's possible to redirect the request to the PHP-FPM
+ on error 500 (see line 70). You can extend line 70 with every error-code you want to redirect to PHP-FPM.
+
+Example:
+
+{% highlight nginx %}
+error_page      500 501 502 503 = @fpm;
+{% endhighlight %}
 
 ## Testing the configuration
 
@@ -44,7 +59,7 @@ First test if the default PHP-runtime is HHVM by providing the following *index.
 phpinfo();
 {% endhighlight %}
 
-Should return "HipHop"
+This should return "HipHop".
 
 Now let's try the PHP-FPM fallback by providing the following *fallback.php*:
 
@@ -52,10 +67,12 @@ Now let's try the PHP-FPM fallback by providing the following *fallback.php*:
 <?php
 
 if (defined('HHVM_VERSION')) {
-        echo 'HHVM';
         throw new Exception();
 }
+
 phpinfo();
 {% endhighlight %}
 
-This should return the usual PHPInfo
+This should return the usual PHP-info.
+
+If I forgot something or something is wrong let me know through the comments!
