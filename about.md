@@ -2,10 +2,11 @@
 layout: page
 title: "About me"
 description: ""
-group: navigation
+group:
 ---
 {% include JB/setup %}
 
-## Hi!
+## Hi, I'm Philipp Bergsmann!
 
-I work as a TYPO3 developer and system administrator at [opendo GmbH](http://www.opendo.at)
+I work as a TYPO3 developer and system administrator at [opendo GmbH](http://www.opendo.at). You can follow me on
+[twitter](https://twitter.com/phbergsmann)
