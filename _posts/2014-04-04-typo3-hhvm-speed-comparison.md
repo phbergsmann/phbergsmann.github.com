@@ -10,6 +10,9 @@ customjs:
 ---
 {% include JB/setup %}
 
+The performance of TYPO3 can benefit a lot when using HHVM instead of a conventional PHP runtime. The following charts
+show a comparison of different settings under different load.
+<!--more-->
 ## Test setup
 
 * MacBook Pro i7 2.7 GHz, SSD
