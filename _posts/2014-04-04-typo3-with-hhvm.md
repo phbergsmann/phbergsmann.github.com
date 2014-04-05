@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "TYPO3 6.2 with HHVM"
+title: "TYPO3 with HHVM and FPM fallback"
 description: "Guide for a production setup with HHVM and a PHP-FPM fallback"
 category: "TYPO3"
 tags: [typo3,hhvm,nginx]
