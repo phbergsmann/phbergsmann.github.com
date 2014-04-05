@@ -1,13 +1,14 @@
+<article itemscope itemtype="http://schema.org/Article">
 <div class="page-header">
-  <h1>{{ page.title }} {% if page.tagline %}<small>{{page.tagline}}</small>{% endif %}</h1>
+  <h1 itemprop="name">{{ page.title }} {% if page.tagline %}<small>{{page.tagline}}</small>{% endif %}</h1>
 </div>
 
 <div class="row-fluid post-full">
   <div class="span12">
     <div class="date">
-      <span>{{ page.date | date_to_long_string }}</span>
+      <span itemprop="datePublished" content="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date_to_long_string }}</span>
     </div>
-    <div class="content">
+    <div itemprop="articleBody" class="content">
       {{ content }}
     </div>
       <hr>
@@ -51,3 +52,4 @@
     {% include JB/comments %}
   </div>
 </div>
+</article>
