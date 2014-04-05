@@ -2,7 +2,7 @@
 layout: page
 title: "Contact me"
 description: ""
-group: navigation
+group:
 ---
 {% include JB/setup %}
 
