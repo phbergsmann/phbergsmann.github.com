@@ -6,7 +6,7 @@
 <div class="row-fluid post-full">
   <div class="span12">
     <div class="date">
-      <span itemprop="datePublished" content="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date_to_long_string }}</span>
+      <span itemprop="datePublished" content="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date_to_long_string }}</span> <small>by {{ site.author.name }}</small>
     </div>
     <div itemprop="articleBody" class="content">
       {{ content }}
