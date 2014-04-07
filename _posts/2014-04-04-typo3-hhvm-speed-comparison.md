@@ -5,7 +5,7 @@ description: ""
 category: "typo3"
 tags: [typo3,hhvm]
 customjs:
-  - https://github.com/nnnick/Chart.js/raw/master/Chart.min.js
+  - /assets/posts/2014-04-04-typo3-hhvm-speed-comparison/js/Chart.min.js
   - /assets/posts/2014-04-04-typo3-hhvm-speed-comparison/js/charts.js
 ---
 {% include JB/setup %}
