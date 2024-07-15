@@ -1,14 +1,12 @@
 ---
-layout: post
 title: "TYPO3 with nginx and memcached-module"
 description: "Guide for a setup with nginx, it's memcached module and TYPO3"
 category: "TYPO3"
 tags: [typo3,memcached,nginx]
-customjs:
+custom_js:
   - /assets/posts/2014-11-15-typo3-nginx-memcached/js/Chart.min.js
   - /assets/posts/2014-11-15-typo3-nginx-memcached/js/charts.js
 ---
-{% include JB/setup %}
 
 This is a proof of concept of in-memory caching with TYPO3, nginx and memcached.<!--more-->
 
