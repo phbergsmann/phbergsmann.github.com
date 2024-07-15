@@ -31,7 +31,7 @@ twitter_username: jekyllrb
 github_username:  jekyll
 repository: "aws-user-group-toolkit/usergroup-tookit.com"
 breadcrumbs: true  # disabled by default
-permalink: /:categories/:year/:month/:day/:title
+permalink: /:categories/:year/:month/:day/:title/
 pygments: true
 highlighter : pygments
 footer:
