@@ -48,7 +48,7 @@ Ensure the following environment variables are set for the Python part:
 {% highlight bash %}
 EMBEDDING_MODELL="nomic-embed-text"
 OLLAMA_BASE_URL=""
-PGVECTOR_CONNECTION_STRING="postgresql+psycopg://vectordb:vectordb@localhost:5432/vectordb"
+PGVECTOR_CONNECTION_STRING="postgresql+psycopg://vectordb:vectordb@localhost:5432/vectordb" # notsecret
 PGVECTOR_COLLECTION="mycollection"
 {% endhighlight %}
 
