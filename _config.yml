@@ -36,11 +36,6 @@ permalink: /:categories/:year/:month/:day/:title/
 enable_copy_code_button: true
 highlighter : pygments
 
-jekyll_analytics:
-  Plausible:
-    domain: 'ph-bergsmann.com'
-    source: 'https://plausible.io/js/script.js'
-
 footer:
   links:
     - label: "GitHub"
@@ -60,12 +55,10 @@ remote_theme: "mmistakes/minimal-mistakes@4.26.1"
 plugins:
   - jekyll-include-cache
   - jekyll-remote-theme
-  - jekyll-analytics
 
 whitelist:
   - jekyll-include-cache
   - jekyll-remote-theme
-  - jekyll-analytics
 
 defaults:
   - scope:

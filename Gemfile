@@ -19,8 +19,7 @@ gem "jekyll-feed", "~> 0.12"
 gem "github-pages", "~> 231"
 gem "jekyll-include-cache"
 gem 'pygments.rb', "~> 3.0.0"
-#gem 'jekyll-analytics', "~> 0.1.14"
-gem "jekyll-analytics", "~> 0.1", git: 'https://github.com/hendrikschneider/jekyll-analytics', ref: '40e09570dea80e3a9ecb0ad796aad1c434ff067c'
+
 # Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem
 # and associated library.
 platforms :mingw, :x64_mingw, :mswin, :jruby do
