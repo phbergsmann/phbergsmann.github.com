@@ -18,7 +18,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Philipp Bergsmann
+title: Philipp's Personal Blog
 email: me@ph-bergsmann.com
 description: >- # this means to ignore newlines until "baseurl:"
   Write an awesome description for your new site here. You can edit this
@@ -32,8 +32,10 @@ github_username:  jekyll
 repository: "aws-user-group-toolkit/usergroup-tookit.com"
 breadcrumbs: true  # disabled by default
 permalink: /:categories/:year/:month/:day/:title/
-pygments: true
+
+enable_copy_code_button: true
 highlighter : pygments
+
 footer:
   links:
     - label: "GitHub"
@@ -73,7 +75,12 @@ defaults:
 author:
   name     : "Philipp Bergsmann"
   avatar   : "/assets/images/philipp-bergsmann.png"
-  bio      : "I'm part of the EMEA OpenShift Black Belt team at Red Hat, focusing on the managed cloud offerings. I have worked in the IT industry for about 20 years in various roles, from development to cloud infrastructure consulting. Over the last few years, I have worked extensively on Kubernetes-related topics, planning and implementing Kubernetes platforms with various local and international companies."
+  bio      : |
+    I'm part of the EMEA OpenShift Black Belt team at Red Hat, focusing on the managed cloud offerings like ARO and ROSA.
+    
+    I have worked in the IT industry for about 20 years in various roles, from development to cloud infrastructure consulting.
+    
+    Over the last few years, I have worked extensively on Kubernetes-related topics, planning and implementing Kubernetes platforms with various local and international companies.
   location : "Vienna, Austria"
   links:
     - label: "GitHub"

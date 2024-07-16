@@ -6,6 +6,7 @@ tags: [typo3,memcached,nginx]
 custom_js:
   - /assets/posts/2014-11-15-typo3-nginx-memcached/js/Chart.min.js
   - /assets/posts/2014-11-15-typo3-nginx-memcached/js/charts.js
+classes: wide
 ---
 
 This is a proof of concept of in-memory caching with TYPO3, nginx and memcached.<!--more-->

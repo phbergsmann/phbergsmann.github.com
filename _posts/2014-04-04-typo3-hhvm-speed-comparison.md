@@ -3,9 +3,10 @@ title: "TYPO3 HHVM speed comparison"
 description: ""
 category: "typo3"
 tags: [typo3,hhvm]
-customjs:
+custom_js:
   - /assets/posts/2014-04-04-typo3-hhvm-speed-comparison/js/Chart.min.js
   - /assets/posts/2014-04-04-typo3-hhvm-speed-comparison/js/charts.js
+classes: wide
 ---
 
 The performance of TYPO3 can benefit a lot when using HHVM instead of a conventional PHP runtime. The following charts

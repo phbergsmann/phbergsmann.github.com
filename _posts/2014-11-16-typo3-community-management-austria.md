@@ -3,6 +3,7 @@ title: "Vision for TYPO3 community management in austria"
 description: "Our proposal to foster and enlighten the TYPO3 community in austria"
 category: "TYPO3"
 tags: [typo3,community]
+classes: wide
 ---
 
 This post should sum up the proposal for community management in austria which Georg Ringer and me sent to the

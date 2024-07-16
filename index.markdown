@@ -11,6 +11,6 @@ excerpt: "Explore my highly opinionated insights into cloud computing, AI/ML, op
 
 ## Latest Blog Posts
 
-{% for post in site.posts limit: 3 %}
+{% for post in site.posts %}
   {% include archive-single.html %}
 {% endfor %}
