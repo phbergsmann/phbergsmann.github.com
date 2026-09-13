@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 720" role="img" aria-labelledby="title desc">
+  <title id="title">Tags are names, digests are identities</title>
+  <desc id="desc">Several lifecycle tags point to the same immutable container digest.</desc>
+  <defs>
+    <style>
+      .bg{fill:#fff}.title{font:700 48px system-ui,-apple-system,sans-serif;fill:#10233f}.sub{font:24px system-ui,-apple-system,sans-serif;fill:#66758a}.box{fill:#fff;stroke:#cad5e1;stroke-width:2}.tag{fill:#edf6ff;stroke:#2887e8;stroke-width:2}.digest{fill:#effaf2;stroke:#45a968;stroke-width:3}.ok{fill:#effaf2;stroke:#55ad71;stroke-width:2}.fail{fill:#fff3f3;stroke:#db6a6a;stroke-width:2}.h{font:700 24px system-ui,-apple-system,sans-serif;fill:#10233f}.p{font:18px system-ui,-apple-system,sans-serif;fill:#66758a}.small{font:16px system-ui,-apple-system,sans-serif;fill:#66758a}.mono{font:18px ui-monospace,SFMono-Regular,monospace;fill:#183b63}.line{stroke:#2887e8;stroke-width:4;fill:none;marker-end:url(#a)}
+    </style>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#2887e8"/></marker>
+  </defs>
+  <rect class="bg" width="1440" height="720"/>
+  <text class="title" x="720" y="70" text-anchor="middle">Tags are names. Digests are identities.</text>
+  <text class="sub" x="720" y="108" text-anchor="middle">Use tags for readability. Use digests for certainty.</text>
+
+  <rect class="box" x="50" y="170" rx="16" width="330" height="420"/>
+  <text class="h" x="90" y="225">A tag is a name</text>
+  <text class="p" x="90" y="260">Human-friendly and movable</text>
+  <rect class="tag" x="90" y="290" rx="12" width="250" height="62"/>
+  <text class="mono" x="215" y="329" text-anchor="middle">app:1.4.0</text>
+  <text class="small" x="90" y="395">✓ meaningful to people</text>
+  <text class="small" x="90" y="430">✓ easy to read and share</text>
+  <text class="small" x="90" y="465">✓ can be moved</text>
+  <line x1="90" y1="495" x2="340" y2="495" stroke="#d8dee6"/>
+  <text class="h" x="90" y="540">A digest is an identity</text>
+  <text class="p" x="90" y="575">Content-addressed and immutable</text>
+
+  <rect class="box" x="430" y="170" rx="16" width="610" height="420"/>
+  <text class="h" x="735" y="225" text-anchor="middle">One artifact, many lifecycle tags</text>
+  <rect class="tag" x="480" y="270" rx="12" width="160" height="60"/>
+  <text class="mono" x="560" y="307" text-anchor="middle">pr-471-abc...</text>
+  <rect class="tag" x="655" y="270" rx="12" width="170" height="60"/>
+  <text class="mono" x="740" y="307" text-anchor="middle">1.4.0-rc.471</text>
+  <rect class="tag" x="840" y="270" rx="12" width="150" height="60"/>
+  <text class="mono" x="915" y="307" text-anchor="middle">1.4.0</text>
+  <path class="line" d="M560 330 C560 390 650 390 690 420"/>
+  <path class="line" d="M740 330 V410"/>
+  <path class="line" d="M915 330 C915 390 830 390 790 420"/>
+  <rect class="digest" x="590" y="420" rx="16" width="300" height="110"/>
+  <text class="h" x="740" y="465" text-anchor="middle">Exact artifact</text>
+  <text class="mono" x="740" y="500" text-anchor="middle">sha256:2f542...</text>
+  <text class="p" x="735" y="565" text-anchor="middle">No rebuild. New names, same content.</text>
+
+  <rect class="box" x="1090" y="170" rx="16" width="300" height="420"/>
+  <text class="h" x="1240" y="225" text-anchor="middle">Immutable promotion</text>
+  <rect class="ok" x="1130" y="270" rx="12" width="220" height="110"/>
+  <text class="h" x="1240" y="310" text-anchor="middle">Idempotent</text>
+  <text class="small" x="1240" y="345" text-anchor="middle">target already points to</text>
+  <text class="small" x="1240" y="370" text-anchor="middle">the same digest: succeed</text>
+  <rect class="fail" x="1130" y="410" rx="12" width="220" height="125"/>
+  <text class="h" x="1240" y="450" text-anchor="middle">Conflict</text>
+  <text class="small" x="1240" y="485" text-anchor="middle">target points to another</text>
+  <text class="small" x="1240" y="510" text-anchor="middle">digest: fail hard</text>
+</svg>
