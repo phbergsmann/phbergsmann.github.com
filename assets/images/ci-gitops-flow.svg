@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 720" role="img" aria-labelledby="title desc">
+  <title id="title">CI is not the deployment system</title>
+  <desc id="desc">CI updates Git desired state and Argo CD reconciles Kubernetes. CI does not deploy directly to the cluster.</desc>
+  <defs>
+    <style>
+      .bg{fill:#fff}.title{font:700 48px system-ui,-apple-system,sans-serif;fill:#10233f}.sub{font:24px system-ui,-apple-system,sans-serif;fill:#66758a}.box{fill:#fff;stroke:#cad5e1;stroke-width:2}.green{fill:#effaf2;stroke:#55ad71;stroke-width:2}.h{font:700 25px system-ui,-apple-system,sans-serif;fill:#10233f}.p{font:18px system-ui,-apple-system,sans-serif;fill:#66758a}.small{font:16px system-ui,-apple-system,sans-serif;fill:#66758a}.mono{font:15px ui-monospace,SFMono-Regular,monospace;fill:#315a86}.arrow{stroke:#2887e8;stroke-width:4;fill:none;marker-end:url(#a)}.garrow{stroke:#42a866;stroke-width:4;fill:none;marker-end:url(#g)}.bad{stroke:#df5757;stroke-width:4;stroke-dasharray:10 8;fill:none;marker-end:url(#r)}
+    </style>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#2887e8"/></marker>
+    <marker id="g" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#42a866"/></marker>
+    <marker id="r" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#df5757"/></marker>
+  </defs>
+  <rect class="bg" width="1440" height="720"/>
+  <text class="title" x="720" y="70" text-anchor="middle">CI is not the deployment system</text>
+  <text class="sub" x="720" y="108" text-anchor="middle">Let CI change desired state. Let GitOps reconcile the cluster.</text>
+
+  <rect class="box" x="60" y="180" rx="16" width="260" height="320"/>
+  <text class="h" x="190" y="235" text-anchor="middle">CI Pipeline</text>
+  <text class="small" x="105" y="295">✓ run tests</text>
+  <text class="small" x="105" y="335">✓ build image</text>
+  <text class="small" x="105" y="375">✓ promote artifact</text>
+  <text class="small" x="105" y="415">✓ update Git</text>
+
+  <path class="arrow" d="M320 340 H385"/>
+  <rect class="box" x="400" y="160" rx="16" width="330" height="360"/>
+  <text class="h" x="565" y="215" text-anchor="middle">Git Desired State</text>
+  <text class="p" x="565" y="250" text-anchor="middle">versioned and reviewable</text>
+  <rect x="445" y="285" width="240" height="150" rx="10" fill="#f6f8fa" stroke="#d8dee6"/>
+  <text class="mono" x="465" y="318">images:</text>
+  <text class="mono" x="465" y="347">  - name: api</text>
+  <text class="mono" x="465" y="376">    newTag:</text>
+  <text class="mono" x="465" y="405">      1.4.0-rc.471</text>
+  <text class="small" x="565" y="475" text-anchor="middle">Git remains the source of truth</text>
+
+  <path class="arrow" d="M730 340 H795"/>
+  <rect class="green" x="810" y="180" rx="16" width="250" height="320"/>
+  <text class="h" x="935" y="235" text-anchor="middle">Argo CD</text>
+  <text class="small" x="855" y="300">1. watch repository</text>
+  <text class="small" x="855" y="340">2. calculate diff</text>
+  <text class="small" x="855" y="380">3. sync changes</text>
+  <text class="small" x="855" y="420">4. self-heal drift</text>
+
+  <path class="garrow" d="M1060 340 H1125"/>
+  <rect class="green" x="1140" y="160" rx="16" width="250" height="360"/>
+  <text class="h" x="1265" y="215" text-anchor="middle">Kubernetes</text>
+  <rect x="1180" y="275" rx="10" width="170" height="55" fill="#fff" stroke="#9bd3ad"/>
+  <text class="p" x="1265" y="309" text-anchor="middle">Dev</text>
+  <rect x="1180" y="350" rx="10" width="170" height="55" fill="#fff" stroke="#9bd3ad"/>
+  <text class="p" x="1265" y="384" text-anchor="middle">Staging</text>
+  <rect x="1180" y="425" rx="10" width="170" height="55" fill="#fff" stroke="#9bd3ad"/>
+  <text class="p" x="1265" y="459" text-anchor="middle">Production</text>
+
+  <path class="bad" d="M190 515 C410 650 1020 650 1265 535"/>
+  <circle cx="720" cy="610" r="28" fill="#df5757"/>
+  <path d="M708 598 L732 622 M732 598 L708 622" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+  <text x="720" y="670" text-anchor="middle" style="font:700 20px system-ui,-apple-system,sans-serif;fill:#c44545">No kubectl apply / oc apply from CI</text>
+</svg>
