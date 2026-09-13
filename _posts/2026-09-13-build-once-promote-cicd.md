@@ -26,7 +26,7 @@ I did not want one huge GitHub Actions workflow handling CI, releases, staging a
 
 The workflows are split into entrypoints and reusable building blocks:
 
-{% highlight text %}
+```text
 .github/workflows/
 ├── ci.yml
 ├── release-request.yml
@@ -36,7 +36,7 @@ The workflows are split into entrypoints and reusable building blocks:
 ├── _classify-images.yml
 ├── _promote-images.yml
 └── _terraform-apply.yml
-{% endhighlight %}
+```
 
 The first four are triggered by events. The workflows prefixed with `_` are internal building blocks and only expose `workflow_call`.
 
@@ -56,21 +56,21 @@ This split is not only about readability. The workflows have different trust req
 
 The CI workflow starts with fairly ordinary triggers:
 
-{% highlight yaml %}
+```yaml
 on:
   push:
     branches: [main]
   pull_request:
   workflow_dispatch:
-{% endhighlight %}
+```
 
 There is also concurrency handling:
 
-{% highlight yaml %}
+```yaml
 concurrency:
   group: ci-${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-{% endhighlight %}
+```
 
 For Pull Requests I want old runs to be canceled when a new commit arrives. For `main`, I do not. An outdated PR build is useless. Canceling an integration run on `main` because another commit arrived can hide failures.
 
@@ -78,7 +78,7 @@ For Pull Requests I want old runs to be canceled when a new commit arrives. For 
 
 Before the image lifecycle starts, CI calls a reusable classifier:
 
-{% highlight yaml %}
+```yaml
 classify-images:
   name: Classify Images
   if: ${{ github.event_name == 'pull_request' }}
@@ -91,11 +91,11 @@ classify-images:
     head-sha: ${{ github.event.pull_request.head.sha }}
     pull-request: ${{ github.event.pull_request.number }}
     mode: pr
-{% endhighlight %}
+```
 
 The classifier exposes a small `workflow_call` interface:
 
-{% highlight yaml %}
+```yaml
 on:
   workflow_call:
     inputs:
@@ -118,11 +118,11 @@ on:
         value: ${{ jobs.classify.outputs.images-required }}
       build-required:
         value: ${{ jobs.classify.outputs.build-required }}
-{% endhighlight %}
+```
 
 It maps changed paths to container images. A simplified version looks like this:
 
-{% highlight bash %}
+```bash
 case "$path" in
   src/backend/Dockerfile)
     add_images api
@@ -142,7 +142,7 @@ case "$path" in
     all_images
     ;;
 esac
-{% endhighlight %}
+```
 
 The last case is important. Unknown paths fail closed to rebuilding everything. I would rather spend another few minutes in CI than incorrectly assume that a change cannot influence an image.
 
@@ -152,7 +152,7 @@ The classifier returns a JSON build matrix which the image build job consumes di
 
 The container build is downstream of linting, type checks, infrastructure validation, tests, migrations, schema drift checks and security scans:
 
-{% highlight yaml %}
+```yaml
 candidate-build:
   name: Build Candidate Image
   if: ${{ github.event_name == 'pull_request' && needs.classify-images.outputs.build-required == 'true' }}
@@ -170,7 +170,7 @@ candidate-build:
     fail-fast: false
     matrix:
       include: ${{ fromJson(needs.classify-images.outputs.matrix) }}
-{% endhighlight %}
+```
 
 If a migration is broken, I do not need a candidate image. If the source contains a HIGH or CRITICAL vulnerability, I do not need a candidate image. If TypeScript does not compile, I definitely do not need a candidate image.
 
@@ -180,7 +180,7 @@ The actual container build is the most important part of the pipeline.
 
 I do not build and immediately push the image. Instead, BuildKit creates an OCI layout archive:
 
-{% highlight yaml %}
+```yaml
 - name: Build ${{ matrix.name }} image exactly once
   uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
   with:
@@ -194,7 +194,7 @@ I do not build and immediately push the image. Instead, BuildKit creates an OCI 
     cache-to: type=gha,scope=${{ matrix.cache-scope }},mode=max
     build-args: |
       SOURCE_DATE_EPOCH=${{ steps.epoch.outputs.epoch }}
-{% endhighlight %}
+```
 
 There are a few intentional details here:
 
@@ -209,7 +209,7 @@ The archive produced by this step is the artifact which gets tested, scanned and
 
 After the build I unpack the OCI layout and record its digest:
 
-{% highlight bash %}
+```bash
 mkdir -p "oci-layout-${SERVICE}"
 tar -xf "candidate-${SERVICE}.oci.tar" -C "oci-layout-${SERVICE}"
 
@@ -219,7 +219,7 @@ if ! printf '%s' "$digest" | grep -Eq '^sha256:[0-9a-f]{64}$'; then
   echo "Unexpected digest: $digest"
   exit 1
 fi
-{% endhighlight %}
+```
 
 From this point onwards, the pipeline works with the digest, not with a mutable tag.
 
@@ -229,7 +229,7 @@ From this point onwards, the pipeline works with the digest, not with a mutable 
 
 The OCI archive is copied into a temporary local registry and pulled by digest:
 
-{% highlight bash %}
+```bash
 oras copy \
   --from-oci-layout \
   --to-plain-http \
@@ -238,18 +238,18 @@ oras copy \
 
 image_ref="localhost:5000/example/${SERVICE}@${digest}"
 docker pull "$image_ref"
-{% endhighlight %}
+```
 
 Smoke tests run against this reference:
 
-{% highlight bash %}
+```bash
 docker run -d \
   --name "smoke-${SERVICE}" \
   -p "127.0.0.1:18000:${port}" \
   "$image_ref"
 
 curl "http://127.0.0.1:18000${path}"
-{% endhighlight %}
+```
 
 I am not testing `my-image:ci`. I am testing `my-image@sha256:...`, and that digest is the artifact I want to promote later.
 
@@ -257,7 +257,7 @@ I am not testing `my-image:ci`. I am testing `my-image@sha256:...`, and that dig
 
 Trivy gets exactly the same digest:
 
-{% highlight bash %}
+```bash
 trivy image \
   --insecure \
   --severity HIGH,CRITICAL \
@@ -266,11 +266,11 @@ trivy image \
   --output "trivy-${SERVICE}-image-results.sarif" \
   --exit-code 0 \
   "localhost:5000/example/${SERVICE}@${digest}"
-{% endhighlight %}
+```
 
 The SBOM is generated from the same image:
 
-{% highlight yaml %}
+```yaml
 - name: Generate SBOM
   uses: anchore/sbom-action@3ad7283483fc7af8ff2b4ea19663c2d5ca935e26
   with:
@@ -278,7 +278,7 @@ The SBOM is generated from the same image:
     output-file: "${{ matrix.name }}-sbom.spdx.json"
     format: spdx-json
     upload-artifact: false
-{% endhighlight %}
+```
 
 The CI artifact now contains the OCI image, the SBOM and the Trivy result. There is no rebuild between those steps.
 
@@ -286,7 +286,7 @@ The CI artifact now contains the OCI image, the SBOM and the Trivy result. There
 
 The build job is intentionally not allowed to publish to the registry. A separate job gets those permissions:
 
-{% highlight yaml %}
+```yaml
 candidate-publish:
   name: Candidate Publish
   permissions:
@@ -295,7 +295,7 @@ candidate-publish:
     packages: write
     id-token: write
     statuses: write
-{% endhighlight %}
+```
 
 That job downloads only the expected artifacts from the current workflow run, validates their contents and publishes them.
 
@@ -307,7 +307,7 @@ After publication, the digest is signed using cosign and GitHub's OIDC identity.
 
 The workflow first checks whether the expected signature already exists:
 
-{% highlight bash %}
+```bash
 if cosign verify \
   --certificate-identity-regexp "$IDENTITY_REGEX" \
   --certificate-oidc-issuer "$OIDC_ISSUER" \
@@ -316,7 +316,7 @@ if cosign verify \
 else
   cosign sign --yes "${image}@${digest}"
 fi
-{% endhighlight %}
+```
 
 The same image also gets SLSA provenance and an SPDX SBOM attestation.
 
@@ -326,17 +326,17 @@ The useful question during promotion is therefore not only "is this image signed
 
 After publishing the candidate, CI updates the development Kustomization in the existing feature branch:
 
-{% highlight yaml %}
+```yaml
 images:
   - name: ghcr.io/example/api
     newTag: pr-471-0123456789abcdef...
-{% endhighlight %}
+```
 
 I prefer this over creating another deployment PR because the application change and its resulting dev desired state are reviewed together.
 
 It creates one interesting problem though:
 
-{% highlight text %}
+```text
 PR
  |
  v
@@ -353,7 +353,7 @@ PR changed
  |
  v
 CI starts again
-{% endhighlight %}
+```
 
 The second run must exist because the final PR head needs valid required checks. But it must not build the candidate again.
 
@@ -365,21 +365,21 @@ Using GitHub's native `[skip ci]` would be wrong here because it would also skip
 
 Production releases use a separate workflow. The trigger is an issue label event:
 
-{% highlight yaml %}
+```yaml
 on:
   issues:
     types: [labeled]
-{% endhighlight %}
+```
 
 The relevant label represents approval of the release request.
 
 When approval happens, the workflow snapshots `main`:
 
-{% highlight bash %}
+```bash
 snapshot_sha=$(gh api \
   "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" \
   --jq .object.sha)
-{% endhighlight %}
+```
 
 Everything else is derived from repository state. The workflow determines the currently deployed candidate, verifies its source Pull Request and CI status, validates the image evidence and creates a Release PR.
 
@@ -389,27 +389,27 @@ I prefer this over a release form asking for a version, Git SHA and image tag. T
 
 Staging has a different trigger:
 
-{% highlight yaml %}
+```yaml
 on:
   workflow_run:
     workflows: [CI]
     types: [completed]
-{% endhighlight %}
+```
 
 It does not stage a Release PR immediately when it changes. It reacts to the result of CI.
 
 The workflow first checks that it is looking at a successful Pull Request run:
 
-{% highlight bash %}
+```bash
 [ "$RUN_EVENT" = "pull_request" ] || noop "Not a Pull Request run"
 [ "$RUN_CONCLUSION" = "success" ] || noop "CI was not successful"
-{% endhighlight %}
+```
 
 The workflow then verifies that the run belongs to the trusted Release PR.
 
 This gives me the ordering I want:
 
-{% highlight text %}
+```text
 Release PR changes
        |
        v
@@ -420,7 +420,7 @@ Release PR changes
        |
        v
 staging workflow
-{% endhighlight %}
+```
 
 Staging cannot race ahead of CI.
 
@@ -432,18 +432,18 @@ On the first successful CI run of a Release PR, the workflow updates the desired
 
 The workflow distinguishes those two states:
 
-{% highlight bash %}
+```bash
 pass="first"
 
 if check_all "$staging_tags" "$rc_tag" \
   && check_all "$prod_tags" "$version"; then
   pass="final"
 fi
-{% endhighlight %}
+```
 
 The jobs are then split accordingly:
 
-{% highlight yaml %}
+```yaml
 commit-overlays:
   if: ${{ needs.resolve.outputs.pass == 'first' }}
 
@@ -454,7 +454,7 @@ promote:
     source-tag: ${{ needs.resolve.outputs.candidate }}
     target-tag: ${{ needs.resolve.outputs.rc-tag }}
     build-sha: ${{ needs.resolve.outputs.build-sha }}
-{% endhighlight %}
+```
 
 So the generated desired-state change itself has passed CI before the corresponding artifact reaches staging.
 
@@ -462,7 +462,7 @@ So the generated desired-state change itself has passed CI before the correspond
 
 The actual promotion logic lives in `_promote-images.yml` and exposes only the information it needs:
 
-{% highlight yaml %}
+```yaml
 on:
   workflow_call:
     inputs:
@@ -475,7 +475,7 @@ on:
       build-sha:
         required: true
         type: string
-{% endhighlight %}
+```
 
 Staging calls it for candidate to RC promotion. Production later calls the same workflow for RC to stable promotion.
 
@@ -487,7 +487,7 @@ Before copying anything, the workflow resolves the source digest and verifies it
 
 The actual promotion is small:
 
-{% highlight bash %}
+```bash
 if tgt_hex=$(oras manifest fetch "${image}:${TARGET_TAG}" 2>/dev/null \
   | sha256sum | cut -d' ' -f1); then
 
@@ -501,24 +501,24 @@ if tgt_hex=$(oras manifest fetch "${image}:${TARGET_TAG}" 2>/dev/null \
 fi
 
 oras cp "${image}@${src_digest}" "${image}:${TARGET_TAG}"
-{% endhighlight %}
+```
 
 An existing target tag pointing to the same digest is an idempotent success. An existing target pointing somewhere else is a hard failure.
 
 After the copy, the target is resolved again and must match the source digest:
 
-{% highlight bash %}
+```bash
 tgt_hex=$(oras manifest fetch "${image}:${TARGET_TAG}" \
   | sha256sum | cut -d' ' -f1)
 
 [ "sha256:${tgt_hex}" = "${src_digest}" ] || exit 1
-{% endhighlight %}
+```
 
 ## Production Is Triggered by Closing the Release PR
 
 The production workflow is driven by the Release PR lifecycle:
 
-{% highlight yaml %}
+```yaml
 on:
   pull_request:
     types: [closed]
@@ -527,7 +527,7 @@ on:
       release-pr:
         required: true
         type: number
-{% endhighlight %}
+```
 
 A `closed` event covers both a merged and a canceled release. The workflow classifies which path happened.
 
@@ -537,14 +537,14 @@ The additional `workflow_dispatch` is only for idempotent recovery. If a later A
 
 Production then calls the same promotion workflow:
 
-{% highlight yaml %}
+```yaml
 promote:
   uses: ./.github/workflows/_promote-images.yml
   with:
     source-tag: ${{ needs.classify.outputs.rc-tag }}
     target-tag: ${{ needs.classify.outputs.version }}
     build-sha: ${{ needs.classify.outputs.build-sha }}
-{% endhighlight %}
+```
 
 There is only one promotion implementation to secure and test.
 
@@ -564,7 +564,7 @@ A Pull Request is temporary. Staging is not. Using a persistent branch gives me 
 
 Infrastructure changes are separated again:
 
-{% highlight yaml %}
+```yaml
 on:
   workflow_call:
     inputs:
@@ -574,43 +574,43 @@ on:
       revision:
         required: true
         type: string
-{% endhighlight %}
+```
 
 The important input is `revision`. Terraform does not simply check out whatever happens to be `main` when the job starts. It applies an explicitly selected Git revision.
 
 The apply job is bound to a GitHub Environment and receives OIDC permission:
 
-{% highlight yaml %}
+```yaml
 apply:
   needs: inspect
   if: ${{ needs.inspect.outputs.applicable == 'true' }}
   environment: ${{ inputs.environment }}
   permissions:
     id-token: write
-{% endhighlight %}
+```
 
 AWS authentication uses OIDC instead of permanent AWS access keys:
 
-{% highlight yaml %}
+```yaml
 - name: Configure AWS credentials (OIDC)
   uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c
   with:
     role-to-assume: ${{ vars.AWS_ROLE_ARN }}
     aws-region: ${{ vars.AWS_REGION }}
-{% endhighlight %}
+```
 
 The workflow also saves and applies the exact Terraform plan:
 
-{% highlight bash %}
+```bash
 terraform plan -input=false -no-color -out=tfplan
 terraform apply -input=false tfplan
-{% endhighlight %}
+```
 
 ## The Complete Trigger Chain
 
 With all of this combined, the lifecycle looks like this:
 
-{% highlight text %}
+```text
 Feature Pull Request
         |
         | pull_request
@@ -667,7 +667,7 @@ release-prod.yml
         |
         v
 Argo CD production
-{% endhighlight %}
+```
 
 The triggers are doing more than starting workflows. They encode the lifecycle.
 
@@ -679,7 +679,7 @@ I find this much easier to reason about than one `deploy.yml` with twenty condit
 
 The most important property is still simple:
 
-{% highlight text %}
+```text
 build once
     |
     v
@@ -693,7 +693,7 @@ sha256:abc...
     +--> dev
     +--> staging
     `--> production
-{% endhighlight %}
+```
 
 But getting there required more than removing a few `docker build` commands.
 
