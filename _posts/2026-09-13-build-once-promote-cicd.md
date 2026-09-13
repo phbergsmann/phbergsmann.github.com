@@ -18,7 +18,7 @@ This led to a pipeline where application images are built in Pull Request CI exa
 
 The implementation uses GitHub Actions, GHCR, ORAS, Trivy, Syft, cosign, Argo CD and Terraform. This post goes through the actual workflow structure and some of the implementation details.
 
-![Build once and promote the same artifact through all environments](/assets/images/build-once-cicd.webp)
+![Build once and promote the same artifact through all environments](/assets/images/build-once-cicd.svg)
 
 ## Workflow Structure
 
@@ -93,7 +93,7 @@ classify-images:
     mode: pr
 {% endhighlight %}
 
-The classifier itself exposes a small `workflow_call` interface:
+The classifier exposes a small `workflow_call` interface:
 
 {% highlight yaml %}
 on:
@@ -223,7 +223,7 @@ fi
 
 From this point onwards, the pipeline works with the digest, not with a mutable tag.
 
-![Tags are names while digests identify the exact artifact](/assets/images/tags-vs-digests.webp)
+![Tags are names while digests identify the exact artifact](/assets/images/tags-vs-digests.svg)
 
 ## Smoke Test the Exact Digest
 
@@ -554,7 +554,7 @@ None of the lifecycle workflows need to run `kubectl apply` or `oc apply`.
 
 CI updates Git. Argo CD updates Kubernetes.
 
-![CI changes Git desired state while Argo CD reconciles the Kubernetes cluster](/assets/images/ci-gitops-flow.webp)
+![CI changes Git desired state while Argo CD reconciles the Kubernetes cluster](/assets/images/ci-gitops-flow.svg)
 
 For development, the dev Kustomization ends up on the main branch. For staging, I use a persistent `staging` branch as a deployment pointer. The staging workflow moves that branch to the exact validated Release PR head.
 
